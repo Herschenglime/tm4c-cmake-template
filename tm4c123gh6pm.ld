@@ -36,6 +36,9 @@ SECTIONS
         KEEP(*(.isr_vector))
         *(.text*)
         *(.rodata*)
+        /* Ensure ARM exception index is placed in flash with .text
+           so its size is included when computing .data LMA. */
+        KEEP(*(.ARM.exidx* .gnu.linkonce.armexidx.*))
         *(.init)
         *(.fini)
         _etext = .;
@@ -58,3 +61,11 @@ SECTIONS
         _ebss = .;
     } > SRAM
 }
+
+/* Provide runtime symbols expected by various startup/crt files and syscalls */
+_end = _ebss;
+PROVIDE(end = _end);
+PROVIDE(__end__ = _end);
+PROVIDE(__bss_start__ = _bss);
+PROVIDE(__bss_end__ = _ebss);
+
