@@ -6,12 +6,12 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./build/Test.elf",
-            "name": "Debug with OpenOCD",
+            "executable": "C:/Users/Paul/Desktop/tm4c-cmake-template/build/Test.elf",
+            "name": "Test",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "configFiles": ["./openocd.cfg"],
+            "configFiles": ["C:/Users/Paul/Desktop/tm4c-cmake-template/openocd.cfg"],
             "searchDir": [],
             "runToEntryPoint": "main",
             // "showDevDebugOutput": "raw",

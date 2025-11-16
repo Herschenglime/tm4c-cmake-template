@@ -11,7 +11,30 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 project(Test)
 set(EXECUTABLE ${PROJECT_NAME}.elf)
 set(LINKER_FILE ${CMAKE_SOURCE_DIR}/tm4c123gh6pm.ld)
-set(TIVAWARE_DIR ${CMAKE_SOURCE_DIR}/libraries/TivaWare)
+
+# find system install of TivaWare libraries
+# Optionally set this via command line: -DTIVAWARE_ROOT=/path/to/tivaware
+set(TIVAWARE_ROOT "" CACHE PATH "Root directory of system-installed TivaWare")
+
+if(NOT TIVAWARE_ROOT)
+  # Try common locations, first existing wins (other paths are incorrect, update based on your systems)
+  if(EXISTS "/usr/local/ti/tivaware_2_2_0_295")
+    set(TIVAWARE_ROOT "/usr/local/ti/tivaware_2_2_0_295")
+  elseif(EXISTS "/opt/ti/tivaware_2_2_0_295")
+    set(TIVAWARE_ROOT "/opt/ti/tivaware_2_2_0_295")
+  elseif(EXISTS "C:/ti/TivaWare_C_Series-2.2.0.295")
+    set(TIVAWARE_ROOT "C:/ti/TivaWare_C_Series-2.2.0.295")
+  else()
+    message(WARNING "TivaWare not found in standard locations; please set TIVAWARE_ROOT manually.")
+  endif()
+endif()
+
+# Check if TIVAWARE_ROOT include directory exists
+if(TIVAWARE_ROOT AND EXISTS "${TIVAWARE_ROOT}/inc")
+  message(STATUS "Using TivaWare from: ${TIVAWARE_ROOT}")
+else()
+  message(FATAL_ERROR "TIVAWARE_ROOT path not set or invalid. Set TIVAWARE_ROOT manually to a valid TivaWare root directory.")
+endif()
 
 enable_language(C ASM)
 set(CMAKE_C_STANDARD 99)
@@ -30,7 +53,7 @@ add_executable(${EXECUTABLE} ${APP_SRC})
 # List of include directories
 target_include_directories(${EXECUTABLE} PRIVATE
     inc
-    ${TIVAWARE_DIR}
+    ${TIVAWARE_ROOT}
 )
 
 # List of compiler defines, prefix with -D compiler option
